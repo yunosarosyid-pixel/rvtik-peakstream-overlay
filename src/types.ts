@@ -1,46 +1,54 @@
-export type DisplayMode = 'mode1_full' | 'mode2_trip' | 'mode3_facility';
+export type BroadcastMode = 'mode1_facecam' | 'mode2_flyer' | 'mode3_facilities';
 
-export interface TripPackage {
+export type StampType =
+  | 'NONE'
+  | 'FLASH_SALE'
+  | 'SISA_2_SLOT'
+  | 'BEST_SELLER'
+  | 'HARGA_EARLY_BIRD'
+  | 'KUOTA_HAMPIR_HABIS'
+  | 'PROMO_LIVE_HARI_INI'
+  | 'GRATIS_BUFF_STIKER';
+
+export interface MountainTrip {
   id: string;
-  mountainName: string;
-  subtitle: string;
+  name: string;
+  elevation: number; // MDPL
   route: string;
-  elevationMdpl: number;
-  tripDates: string;
+  date: string;
   duration: string;
-  meetingPoint: string;
-  originalPrice: number;
-  promoPrice: number;
-  availableSlots: number;
+  price: number; // IDR
+  normalPrice: number; // IDR
+  slotsAvailable: number;
   totalSlots: number;
   isReady: boolean;
+  level: 'Pemula' | 'Sedang' | 'Tantangan';
   imageUrl: string;
-  highlights: string[];
   includes: string[];
   excludes: string[];
-  badgeTag?: string;
+  tags: string[];
+  basecampLocation: string;
 }
 
-export interface StreamSettings {
-  currentMode: DisplayMode;
-  activeTripId: string;
-  waNumber: string;
-  waAdminName: string;
-  brandName: string;
-  runningText: string;
-  showQrPopup: boolean;
-  showNoticeSpotlight: boolean;
-  noticeViewerName: string;
-  noticeQuestion: string;
-  quickStamp: string | null;
-  selectedCameraDeviceId: string;
-  useSimulatedCamera: boolean;
-  audioMuted: boolean;
-  isNightModeOverlay: boolean;
-}
-
-export interface SyncMessage {
-  type: 'UPDATE_SETTINGS' | 'UPDATE_TRIPS' | 'TRIGGER_STAMP' | 'TRIGGER_NOTICE' | 'RESET_STATE';
-  payload: any;
+export interface ChatNotice {
+  active: boolean;
+  sender: string;
+  question: string;
   timestamp: number;
+}
+
+export interface StreamState {
+  mode: BroadcastMode;
+  activeMountainId: string;
+  stamp: StampType;
+  tickerText: string;
+  tickerEnabled: boolean;
+  chatSpotlight: ChatNotice | null;
+  qrModalActive: boolean;
+  whatsappNumber: string;
+  whatsappMessage: string;
+  isLive: boolean;
+  cameraSimulated: boolean;
+  selectedCameraDeviceId: string;
+  pipPosition: 'bottom-right' | 'bottom-left' | 'top-right';
 }
