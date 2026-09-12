@@ -4,6 +4,8 @@ import {
   StreamState,
   BroadcastMode,
   StampType,
+  OverlayPreset,
+  CardPosition,
 } from '../types';
 import {
   Video,
@@ -25,8 +27,13 @@ import {
   Send,
   AlertCircle,
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  Sliders,
+  Layers,
+  Radio,
+  Wifi,
 } from 'lucide-react';
+import { DEFAULT_OVERLAY_CUSTOMIZATION } from '../utils/syncState';
 
 interface VirtualStreamDeckProps {
   state: StreamState;
@@ -34,6 +41,7 @@ interface VirtualStreamDeckProps {
   onUpdateState: (partial: Partial<StreamState>) => void;
   onOpenMountainManager: () => void;
   onOpenOBSGuide: () => void;
+  onOpenOverlayCustomizer?: () => void;
 }
 
 export function VirtualStreamDeck({
@@ -42,6 +50,7 @@ export function VirtualStreamDeck({
   onUpdateState,
   onOpenMountainManager,
   onOpenOBSGuide,
+  onOpenOverlayCustomizer,
 }: VirtualStreamDeckProps) {
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [chatViewerName, setChatViewerName] = useState('Budi_Pendaki99');
@@ -49,6 +58,8 @@ export function VirtualStreamDeck({
     'Kak kalau pemula belum pernah naik gunung, kuat nggak ikut jalur Torean?'
   );
   const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
+
+  const custom = state.customization || DEFAULT_OVERLAY_CUSTOMIZATION;
 
   // Selected mountain
   const activeMountain =
@@ -84,13 +95,71 @@ export function VirtualStreamDeck({
   const handleModifySlot = (delta: number) => {
     if (!activeMountain) return;
     const newSlots = Math.max(0, Math.min(activeMountain.totalSlots, activeMountain.slotsAvailable + delta));
-    // We update through onUpdateState or we notify parent
     const updatedMountains = mountains.map(m =>
       m.id === activeMountain.id ? { ...m, slotsAvailable: newSlots } : m
     );
-    // Custom event to save mountains
     const event = new CustomEvent('UPDATE_ALL_MOUNTAINS', { detail: updatedMountains });
     window.dispatchEvent(event);
+  };
+
+  // Quick preset apply
+  const handleQuickPreset = (preset: OverlayPreset) => {
+    if (preset === 'transparent_hud') {
+      onUpdateState({
+        customization: {
+          ...custom,
+          preset: 'transparent_hud',
+          bgMode: 'transparent',
+          showWebcamLayer: false,
+          showTopBanner: true,
+          showTripCard: true,
+          cardPosition: 'bottom',
+          cardSize: 'compact',
+          cardOpacity: 90,
+          showStamp: true,
+          stampPosition: 'top-right',
+          showTicker: true,
+          showLiveBadge: true,
+          showTapNotice: true,
+        },
+      });
+    } else if (preset === 'full_presentation') {
+      onUpdateState({
+        customization: {
+          ...custom,
+          preset: 'full_presentation',
+          bgMode: 'image_backdrop',
+          showWebcamLayer: false,
+          showTopBanner: true,
+          showTripCard: true,
+          cardPosition: 'center',
+          cardSize: 'normal',
+          cardOpacity: 95,
+          showStamp: true,
+          stampPosition: 'top-right',
+          showTicker: true,
+          showLiveBadge: true,
+          showTapNotice: true,
+        },
+      });
+    } else if (preset === 'minimal_ticker') {
+      onUpdateState({
+        customization: {
+          ...custom,
+          preset: 'minimal_ticker',
+          bgMode: 'transparent',
+          showWebcamLayer: false,
+          showTopBanner: false,
+          showTripCard: false,
+          cardPosition: 'hidden',
+          showStamp: true,
+          stampPosition: 'top-right',
+          showTicker: true,
+          showLiveBadge: true,
+          showTapNotice: true,
+        },
+      });
+    }
   };
 
   // Toggle chat spotlight
@@ -115,21 +184,25 @@ export function VirtualStreamDeck({
       className="bg-slate-900 border border-slate-800 rounded-3xl p-4 md:p-6 text-white shadow-2xl flex flex-col gap-6"
     >
       {/* ---------------------------------------------------- */}
-      {/* TOP HEADER: TITLE & OBS LINK SHORTCUTS               */}
+      {/* TOP HEADER: TITLE, REALTIME SYNC BADGE & LINKS       */}
       {/* ---------------------------------------------------- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="flex h-3 w-3 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
             <h2 className="text-lg md:text-xl font-black text-white tracking-tight">
               Virtual Stream Deck
             </h2>
-            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-              Live Controller
+            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+              <Wifi className="w-3 h-3" />
+              <span>Real-Time OBS Connected</span>
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Kendali siaran OBS Studio 1-klik untuk TikTok & Shopee Live
+          <p className="text-xs text-slate-400 mt-1">
+            Klik tombol apa saja di HP / Remote, tampilan OBS Browser Source langsung berganti seketika!
           </p>
         </div>
 
@@ -177,10 +250,134 @@ export function VirtualStreamDeck({
             onClick={onOpenOBSGuide}
             id="btn-open-obs-guide"
             className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
-            title="Panduan Cara Pasang di OBS"
+            title="Panduan Cara Pasang & Solusi Tampilan OBS"
           >
             <HelpCircle className="w-4 h-4 text-amber-400" />
           </button>
+        </div>
+      </div>
+
+      {/* ---------------------------------------------------- */}
+      {/* SECTION 0: KUSTOMISASI TAMPILAN OVERLAY (UTAMA)      */}
+      {/* ---------------------------------------------------- */}
+      <div className="bg-gradient-to-br from-amber-500/10 via-slate-800/60 to-slate-900 rounded-2xl p-4 border-2 border-amber-400/60 shadow-xl space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-black uppercase text-amber-300 tracking-wider">
+              Kustomisasi Tampilan Overlay OBS
+            </span>
+          </div>
+          {onOpenOverlayCustomizer && (
+            <button
+              onClick={onOpenOverlayCustomizer}
+              id="btn-open-customizer-modal"
+              className="text-xs font-bold text-amber-400 hover:text-amber-300 underline flex items-center gap-1"
+            >
+              <span>Buka Menu Kustom Detail →</span>
+            </button>
+          )}
+        </div>
+
+        {/* Quick Presets */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => handleQuickPreset('transparent_hud')}
+            className={`p-2.5 rounded-xl border text-left transition flex items-center justify-between ${
+              custom.preset === 'transparent_hud'
+                ? 'bg-amber-500/25 border-amber-400 ring-2 ring-amber-400/50'
+                : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+            }`}
+          >
+            <div>
+              <div className="font-extrabold text-xs text-white">🌟 Transparan HUD</div>
+              <div className="text-[10px] text-slate-300 mt-0.5">Kamera OBS tembus, kartu di bawah</div>
+            </div>
+            {custom.preset === 'transparent_hud' && <Check className="w-4 h-4 text-amber-400 flex-shrink-0 ml-1" />}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleQuickPreset('full_presentation')}
+            className={`p-2.5 rounded-xl border text-left transition flex items-center justify-between ${
+              custom.preset === 'full_presentation'
+                ? 'bg-amber-500/25 border-amber-400 ring-2 ring-amber-400/50'
+                : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+            }`}
+          >
+            <div>
+              <div className="font-extrabold text-xs text-white">🏔️ Presentasi Penuh</div>
+              <div className="text-[10px] text-slate-300 mt-0.5">Foto gunung solid, kartu tengah</div>
+            </div>
+            {custom.preset === 'full_presentation' && <Check className="w-4 h-4 text-amber-400 flex-shrink-0 ml-1" />}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleQuickPreset('minimal_ticker')}
+            className={`p-2.5 rounded-xl border text-left transition flex items-center justify-between ${
+              custom.preset === 'minimal_ticker'
+                ? 'bg-amber-500/25 border-amber-400 ring-2 ring-amber-400/50'
+                : 'bg-slate-800/80 border-slate-700 hover:border-slate-500'
+            }`}
+          >
+            <div>
+              <div className="font-extrabold text-xs text-white">⚡ Minimal Ticker</div>
+              <div className="text-[10px] text-slate-300 mt-0.5">Hanya running text & stempel</div>
+            </div>
+            {custom.preset === 'minimal_ticker' && <Check className="w-4 h-4 text-amber-400 flex-shrink-0 ml-1" />}
+          </button>
+        </div>
+
+        {/* Quick Position & Transparency switches */}
+        <div className="pt-2 border-t border-slate-700/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 font-bold text-[11px]">Latar:</span>
+            {(['transparent', 'glass', 'solid_dark'] as const).map(mode => (
+              <button
+                key={mode}
+                onClick={() =>
+                  onUpdateState({
+                    customization: { ...custom, bgMode: mode, preset: 'custom' },
+                  })
+                }
+                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition ${
+                  custom.bgMode === mode
+                    ? 'bg-cyan-500 text-slate-950 border-cyan-400 font-black'
+                    : 'bg-slate-800 text-slate-300 border-slate-700'
+                }`}
+              >
+                {mode === 'transparent' ? 'Transparan' : mode === 'glass' ? 'Kaca' : 'Gelap'}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 font-bold text-[11px]">Posisi Kartu:</span>
+            {(['bottom', 'center', 'top', 'hidden'] as CardPosition[]).map(pos => (
+              <button
+                key={pos}
+                onClick={() =>
+                  onUpdateState({
+                    customization: {
+                      ...custom,
+                      cardPosition: pos,
+                      showTripCard: pos !== 'hidden',
+                      preset: 'custom',
+                    },
+                  })
+                }
+                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition capitalize ${
+                  custom.cardPosition === pos && (pos !== 'hidden' ? custom.showTripCard : true)
+                    ? 'bg-amber-400 text-slate-950 border-amber-300 font-black'
+                    : 'bg-slate-800 text-slate-300 border-slate-700'
+                }`}
+              >
+                {pos === 'bottom' ? 'Bawah' : pos === 'center' ? 'Tengah' : pos === 'top' ? 'Atas' : 'Sembunyi'}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -189,7 +386,7 @@ export function VirtualStreamDeck({
       {/* ---------------------------------------------------- */}
       <div>
         <label className="text-xs font-extrabold text-amber-400 uppercase tracking-wider block mb-2">
-          1. Pilih Mode Siaran Layar Utama:
+          1. Mode Konten Siaran:
         </label>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
           {/* Mode 1 */}
@@ -212,9 +409,9 @@ export function VirtualStreamDeck({
               <Video className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs font-black uppercase text-white">Mode 1: Full Facecam</div>
+              <div className="text-xs font-black uppercase text-white">Mode 1: Overlay Live Stream</div>
               <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
-                Kamera full screen + slider pamflet mini di atas
+                Cocok untuk overlay di atas kamera OBS & banner trip
               </div>
             </div>
           </button>
@@ -239,9 +436,9 @@ export function VirtualStreamDeck({
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs font-black uppercase text-white">Mode 2: Pamflet Trip</div>
+              <div className="text-xs font-black uppercase text-white">Mode 2: Pamflet Rute Gunung</div>
               <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
-                Poster detail gunung + kamera bulat pojok
+                Detail elevasi, rute, harga promo & kuota
               </div>
             </div>
           </button>
@@ -268,7 +465,7 @@ export function VirtualStreamDeck({
             <div>
               <div className="text-xs font-black uppercase text-white">Mode 3: Fasilitas Trip</div>
               <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
-                Rincian Include vs Exclude + kamera bulat
+                Rincian fasilitas Include vs Exclude
               </div>
             </div>
           </button>
@@ -282,7 +479,7 @@ export function VirtualStreamDeck({
         <div className="flex items-center justify-between mb-2">
           <label className="text-xs font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5 text-orange-400" />
-            2. Tombol Cepat Gunung (Status: Ready Siap Tayang):
+            2. Ganti Gunung Siaran (Real-Time 1-Klik):
           </label>
           <button
             onClick={onOpenMountainManager}
@@ -304,7 +501,7 @@ export function VirtualStreamDeck({
                 id={`btn-select-mountain-${mountain.id}`}
                 className={`p-2.5 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-gradient-to-b from-amber-500/20 to-slate-800 border-amber-400 ring-2 ring-amber-400/60 shadow-lg'
+                    ? 'bg-gradient-to-b from-amber-500/25 to-slate-800 border-amber-400 ring-2 ring-amber-400/60 shadow-lg'
                     : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 hover:border-slate-600'
                 }`}
               >
@@ -329,7 +526,7 @@ export function VirtualStreamDeck({
       </div>
 
       {/* ---------------------------------------------------- */}
-      {/* SECTION 3: REAL-TIME SLOT CONTROLS & PROMO STAMPS    */}
+      {/* SECTION 3: REAL-TIME SLOT CONTROLS & QR PASS         */}
       {/* ---------------------------------------------------- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Real-time Slot counter */}
@@ -397,7 +594,7 @@ export function VirtualStreamDeck({
       {/* ---------------------------------------------------- */}
       <div>
         <label className="text-xs font-extrabold text-amber-400 uppercase tracking-wider block mb-2">
-          5. Pasang Stempel Promo Instan (Badge di Layar):
+          5. Pasang Stempel Promo Instan (Badge Animasi):
         </label>
         <div className="flex flex-wrap gap-2">
           {[
@@ -511,74 +708,35 @@ export function VirtualStreamDeck({
       </div>
 
       {/* ---------------------------------------------------- */}
-      {/* SECTION 6: WEBCAM HARDWARE SETTINGS & RUNNING TICKER */}
+      {/* SECTION 6: RUNNING TICKER EDITOR                     */}
       {/* ---------------------------------------------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Webcam Selector */}
-        <div className="bg-slate-800/40 rounded-2xl p-3.5 border border-slate-700/80">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-extrabold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Camera className="w-3.5 h-3.5 text-amber-400" />
-              Pengaturan Kamera Webcam:
-            </span>
-            <button
-              onClick={() => onUpdateState({ cameraSimulated: !state.cameraSimulated })}
-              id="deck-btn-toggle-cam-sim"
-              className={`text-[10px] font-bold px-2 py-0.5 rounded border transition ${
-                state.cameraSimulated
-                  ? 'bg-amber-400 text-slate-950 border-amber-300 font-black'
-                  : 'bg-slate-800 text-slate-400 border-slate-700'
-              }`}
-            >
-              {state.cameraSimulated ? 'Mode Simulator Host (Aktif)' : 'Gunakan Simulator'}
-            </button>
-          </div>
-
-          <select
-            value={state.selectedCameraDeviceId}
-            disabled={state.cameraSimulated}
-            onChange={e => onUpdateState({ selectedCameraDeviceId: e.target.value })}
-            id="deck-select-camera"
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400 disabled:opacity-50"
+      <div className="bg-slate-800/40 rounded-2xl p-3.5 border border-slate-700/80">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-extrabold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            Edit Running Text Marquee Bawah:
+          </span>
+          <button
+            onClick={() => onUpdateState({ tickerEnabled: !state.tickerEnabled })}
+            id="deck-btn-toggle-ticker"
+            className={`text-[10px] font-bold px-2 py-0.5 rounded border transition ${
+              state.tickerEnabled
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                : 'bg-slate-800 text-slate-400 border-slate-700'
+            }`}
           >
-            <option value="">Pilih Webcam Otomatis (Default)</option>
-            {cameraDevices.map(device => (
-              <option key={device.deviceId} value={device.deviceId}>
-                {device.label || `Camera ${device.deviceId.slice(0, 5)}...`}
-              </option>
-            ))}
-          </select>
+            {state.tickerEnabled ? 'Ticker Aktif' : 'Nonaktif'}
+          </button>
         </div>
 
-        {/* Ticker Runner Editor */}
-        <div className="bg-slate-800/40 rounded-2xl p-3.5 border border-slate-700/80">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-extrabold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              Running Text Ticker:
-            </span>
-            <button
-              onClick={() => onUpdateState({ tickerEnabled: !state.tickerEnabled })}
-              id="deck-btn-toggle-ticker"
-              className={`text-[10px] font-bold px-2 py-0.5 rounded border transition ${
-                state.tickerEnabled
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                  : 'bg-slate-800 text-slate-400 border-slate-700'
-              }`}
-            >
-              {state.tickerEnabled ? 'Ticker Aktif' : 'Nonaktif'}
-            </button>
-          </div>
-
-          <input
-            type="text"
-            value={state.tickerText}
-            onChange={e => onUpdateState({ tickerText: e.target.value })}
-            placeholder="Teks berjalan di bawah layar..."
-            id="input-ticker-text"
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400"
-          />
-        </div>
+        <input
+          type="text"
+          value={state.tickerText}
+          onChange={e => onUpdateState({ tickerText: e.target.value })}
+          placeholder="Teks berjalan di bawah layar..."
+          id="input-ticker-text"
+          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400"
+        />
       </div>
     </div>
   );

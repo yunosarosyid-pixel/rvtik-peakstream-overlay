@@ -1,32 +1,27 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { useState, useEffect } from 'react';
-import { StreamState, MountainTrip } from './types';
+import { MountainTrip, StreamState } from './types';
 import {
-  loadSavedStreamState,
-  saveStreamState,
   loadSavedMountains,
+  loadSavedStreamState,
   saveMountains,
+  saveStreamState,
   subscribeToSync,
 } from './utils/syncState';
 import { OBSOverlayView } from './components/OBSOverlayView';
 import { VirtualStreamDeck } from './components/VirtualStreamDeck';
 import { MountainManagerModal } from './components/MountainManagerModal';
 import { OBSGuideModal } from './components/OBSGuideModal';
+import { OverlayCustomizerModal } from './components/OverlayCustomizerModal';
 import {
+  Flame,
   Tv,
   Smartphone,
-  Layers,
-  HelpCircle,
-  Settings,
-  Sparkles,
   ExternalLink,
-  Flame,
-  Radio,
-  Eye
+  Settings,
+  HelpCircle,
+  Eye,
+  Layers,
+  Sliders,
 } from 'lucide-react';
 
 export default function App() {
@@ -34,6 +29,7 @@ export default function App() {
   const [mountains, setMountains] = useState<MountainTrip[]>(() => loadSavedMountains());
   const [isMountainManagerOpen, setIsMountainManagerOpen] = useState(false);
   const [isOBSGuideOpen, setIsOBSGuideOpen] = useState(false);
+  const [isOverlayCustomizerOpen, setIsOverlayCustomizerOpen] = useState(false);
 
   // Read view mode from URL params: ?view=overlay | ?view=controller
   const [viewParam, setViewParam] = useState<'studio' | 'overlay' | 'controller'>('studio');
@@ -108,7 +104,7 @@ export default function App() {
 
   // ---------------------------------------------------------------------------
   // VIEW MODE 2: REMOTE CONTROLLER ONLY (?view=controller)
-  // Optimized for smartphone / tablet to use as a handheld physical Stream Deck
+  // Handheld Stream Deck for smartphone / tablet
   // ---------------------------------------------------------------------------
   if (viewParam === 'controller') {
     return (
@@ -123,12 +119,21 @@ export default function App() {
               HP Stream Deck Remote
             </h1>
           </div>
-          <a
-            href="?"
-            className="text-xs text-amber-400 font-bold hover:underline"
-          >
-            Mode Studio PC →
-          </a>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsOverlayCustomizerOpen(true)}
+              className="text-xs text-amber-400 font-bold hover:underline flex items-center gap-1"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              <span>Kustom Overlay</span>
+            </button>
+            <a
+              href="?"
+              className="text-xs text-slate-400 font-bold hover:text-white transition"
+            >
+              Mode PC →
+            </a>
+          </div>
         </header>
 
         <VirtualStreamDeck
@@ -137,7 +142,23 @@ export default function App() {
           onUpdateState={handleUpdateStreamState}
           onOpenMountainManager={() => setIsMountainManagerOpen(true)}
           onOpenOBSGuide={() => setIsOBSGuideOpen(true)}
+          onOpenOverlayCustomizer={() => setIsOverlayCustomizerOpen(true)}
         />
+
+        {isOverlayCustomizerOpen && (
+          <OverlayCustomizerModal
+            customization={streamState.customization}
+            onUpdateCustomization={(updated) => {
+              handleUpdateStreamState({
+                customization: {
+                  ...streamState.customization,
+                  ...updated,
+                },
+              });
+            }}
+            onClose={() => setIsOverlayCustomizerOpen(false)}
+          />
+        )}
 
         {isMountainManagerOpen && (
           <MountainManagerModal
@@ -155,7 +176,7 @@ export default function App() {
   }
 
   // ---------------------------------------------------------------------------
-  // DEFAULT: STUDIO WORKSPACE (SIDE-BY-SIDE OBS PREVIEW + STREAM DECK)
+  // DEFAULT: STUDIO WORKSPACE (DUAL VIEW: OBS PREVIEW + STREAM DECK)
   // ---------------------------------------------------------------------------
   return (
     <div
@@ -177,7 +198,7 @@ export default function App() {
                 RVTik PeakStream Studio
               </h1>
               <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 font-extrabold text-[10px] uppercase">
-                Open Trip Live Overlay
+                Customizable OBS Overlay
               </span>
             </div>
             <p className="text-[11px] text-slate-400 hidden sm:block">
@@ -188,6 +209,15 @@ export default function App() {
 
         {/* View Switchers & Guide */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsOverlayCustomizerOpen(true)}
+            id="btn-nav-customizer"
+            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold border border-amber-500/30 flex items-center gap-1.5 transition"
+          >
+            <Sliders className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden sm:inline">Kustom Overlay</span>
+          </button>
+
           {/* Quick View Mode Links */}
           <div className="hidden lg:flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
             <button
@@ -262,26 +292,42 @@ export default function App() {
                 Monitor Live OBS (1080 x 1920)
               </span>
             </div>
-            <span className="text-[10px] font-bold text-slate-400 font-mono">
-              Aspect 9:16 Vertikal
-            </span>
+            <button
+              onClick={() => setIsOverlayCustomizerOpen(true)}
+              className="text-[10px] font-bold text-amber-400 hover:underline flex items-center gap-1"
+            >
+              <Sliders className="w-3 h-3" />
+              <span>Ubah Posisi / Transparan</span>
+            </button>
           </div>
 
-          {/* The OBS Overlay Component in scale */}
-          <div className="w-full flex justify-center">
-            <OBSOverlayView
-              state={streamState}
-              mountains={mountains}
-              onToggleQR={() =>
-                handleUpdateStreamState({ qrModalActive: !streamState.qrModalActive })
-              }
-              isStandaloneOverlay={false}
-            />
+          {/* The OBS Overlay Component in true 9:16 vertical smartphone frame */}
+          <div className="w-full flex justify-center py-1">
+            <div className="w-full max-w-[370px] aspect-[9/16] rounded-[2.5rem] p-2.5 bg-slate-900 border-4 border-slate-700/80 shadow-2xl relative flex flex-col shrink-0">
+              {/* Top phone camera / speaker pill */}
+              <div className="absolute top-3.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-950 rounded-full z-30 flex items-center justify-center gap-2 border border-slate-800 pointer-events-none shadow-inner">
+                <span className="w-2 h-2 rounded-full bg-slate-800"></span>
+                <span className="w-10 h-1 rounded-full bg-slate-800"></span>
+              </div>
+
+              {/* Inner 9:16 Canvas */}
+              <div className="w-full h-full rounded-[2rem] overflow-hidden relative flex flex-col bg-slate-950">
+                <OBSOverlayView
+                  state={streamState}
+                  mountains={mountains}
+                  onToggleQR={() =>
+                    handleUpdateStreamState({ qrModalActive: !streamState.qrModalActive })
+                  }
+                  isStandaloneOverlay={false}
+                />
+              </div>
+            </div>
           </div>
 
-          <p className="text-[11px] text-slate-500 text-center px-4">
-            Tampilan ini adalah simulasi persis apa yang ditangkap oleh browser source OBS Studio pada siaran Anda.
-          </p>
+          <div className="flex items-center gap-2 text-xs text-slate-400 justify-center">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Format Layar: <strong className="text-amber-300 font-extrabold">9:16 Vertikal (1080 × 1920)</strong></span>
+          </div>
         </section>
 
         {/* Right Column: Virtual Stream Deck & Controls */}
@@ -295,11 +341,27 @@ export default function App() {
             onUpdateState={handleUpdateStreamState}
             onOpenMountainManager={() => setIsMountainManagerOpen(true)}
             onOpenOBSGuide={() => setIsOBSGuideOpen(true)}
+            onOpenOverlayCustomizer={() => setIsOverlayCustomizerOpen(true)}
           />
         </section>
       </main>
 
       {/* Modals */}
+      {isOverlayCustomizerOpen && (
+        <OverlayCustomizerModal
+          customization={streamState.customization}
+          onUpdateCustomization={(updated) => {
+            handleUpdateStreamState({
+              customization: {
+                ...streamState.customization,
+                ...updated,
+              },
+            });
+          }}
+          onClose={() => setIsOverlayCustomizerOpen(false)}
+        />
+      )}
+
       {isMountainManagerOpen && (
         <MountainManagerModal
           mountains={mountains}

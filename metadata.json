@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
-  "requestFramePermissions": [],
+  "name": "RVTik PeakStream OBS Overlay & Remote Controller",
+  "description": "Interactive, fully customizable live stream overlay and wireless smartphone remote controller for OBS Studio open trip mountain trekking broadcasts.",
+  "requestFramePermissions": ["camera"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
