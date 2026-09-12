@@ -1,0 +1,7 @@
+{
+  "name": "RVTik PeakStream Studio",
+  "description": "Live streaming overlay dan virtual stream deck untuk promosi open trip pendakian gunung dengan pamflet animasi interaktif, transisi kamera bulat otomatis, dan manajemen trip real-time.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
