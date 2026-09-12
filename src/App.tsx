@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MountainTrip, StreamState } from './types';
+import { MountainTrip, StreamState, StampType } from './types';
 import {
   loadSavedMountains,
   loadSavedStreamState,
@@ -12,6 +12,13 @@ import { VirtualStreamDeck } from './components/VirtualStreamDeck';
 import { MountainManagerModal } from './components/MountainManagerModal';
 import { OBSGuideModal } from './components/OBSGuideModal';
 import { OverlayCustomizerModal } from './components/OverlayCustomizerModal';
+import { WidgetHub } from './components/WidgetHub';
+import { RunningTextWidget } from './components/widgets/RunningTextWidget';
+import { WhatsAppWidget } from './components/widgets/WhatsAppWidget';
+import { PromoBadgeWidget } from './components/widgets/PromoBadgeWidget';
+import { FacilitiesWidget } from './components/widgets/FacilitiesWidget';
+import { MountainTripWidget } from './components/widgets/MountainTripWidget';
+import { QRCodeWidget } from './components/widgets/QRCodeWidget';
 import {
   Flame,
   Tv,
@@ -22,6 +29,8 @@ import {
   Eye,
   Layers,
   Sliders,
+  Link,
+  Sparkles,
 } from 'lucide-react';
 
 export default function App() {
@@ -31,19 +40,25 @@ export default function App() {
   const [isOBSGuideOpen, setIsOBSGuideOpen] = useState(false);
   const [isOverlayCustomizerOpen, setIsOverlayCustomizerOpen] = useState(false);
 
-  // Read view mode from URL params: ?view=overlay | ?view=controller
-  const [viewParam, setViewParam] = useState<'studio' | 'overlay' | 'controller'>('studio');
+  // Active top tab in Studio mode: 'hub' (Widget Hub Links) | 'dual' (Classic Dual Studio)
+  const [studioTab, setStudioTab] = useState<'hub' | 'dual'>('hub');
+
+  // Read view or widget mode from URL params
+  const [urlParams, setUrlParams] = useState<{
+    view?: string | null;
+    widget?: string | null;
+    params: URLSearchParams;
+  }>({
+    view: null,
+    widget: null,
+    params: new URLSearchParams(),
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const view = params.get('view');
-    if (view === 'overlay') {
-      setViewParam('overlay');
-    } else if (view === 'controller') {
-      setViewParam('controller');
-    } else {
-      setViewParam('studio');
-    }
+    const widget = params.get('widget');
+    setUrlParams({ view, widget, params });
   }, []);
 
   // Subscribe to real-time state synchronization across tabs/OBS
@@ -86,10 +101,93 @@ export default function App() {
   };
 
   // ---------------------------------------------------------------------------
+  // WIDGET DIRECT RENDER MODES (Pusat Link OBS Mandiri)
+  // ---------------------------------------------------------------------------
+  if (urlParams.widget) {
+    const { widget, params } = urlParams;
+
+    // 1. Running text widget
+    if (widget === 'running-text') {
+      const text = params.get('text') || undefined;
+      const speed = (params.get('speed') as any) || 'normal';
+      const theme = (params.get('theme') as any) || 'amber';
+      const prefix = params.get('prefix') || undefined;
+      return (
+        <div className="w-screen h-screen bg-transparent overflow-hidden flex items-center justify-center">
+          <RunningTextWidget text={text} speed={speed} theme={theme} prefix={prefix} />
+        </div>
+      );
+    }
+
+    // 2. WhatsApp booking widget
+    if (widget === 'whatsapp') {
+      const waNumber = params.get('wa') || streamState.whatsappNumber;
+      const adminName = params.get('admin') || undefined;
+      const ctaText = params.get('cta') || undefined;
+      const theme = (params.get('theme') as any) || 'green';
+      return (
+        <div className="w-screen h-screen bg-transparent overflow-hidden flex items-center justify-center">
+          <WhatsAppWidget waNumber={waNumber} adminName={adminName} ctaText={ctaText} theme={theme} />
+        </div>
+      );
+    }
+
+    // 3. Promo badge widget
+    if (widget === 'promo-badge') {
+      const type = (params.get('type') as StampType) || 'FLASH_SALE';
+      const customText = params.get('text') || undefined;
+      const size = (params.get('size') as any) || 'normal';
+      const animation = (params.get('animation') as any) || 'bounce';
+      return (
+        <div className="w-screen h-screen bg-transparent overflow-hidden flex items-center justify-center">
+          <PromoBadgeWidget type={type} customText={customText} size={size} animation={animation} />
+        </div>
+      );
+    }
+
+    // 4. Trip Card per Mountain widget
+    if (widget === 'trip-card') {
+      const mountainId = params.get('mountain') || 'rinjani';
+      const targetMountain = mountains.find(m => m.id === mountainId) || mountains[0];
+      const theme = (params.get('theme') as any) || 'amber';
+      const layout = (params.get('layout') as any) || 'card';
+      return (
+        <div className="w-screen h-screen bg-transparent overflow-hidden flex items-center justify-center">
+          <MountainTripWidget mountain={targetMountain} theme={theme} layout={layout} />
+        </div>
+      );
+    }
+
+    // 5. Facilities Include vs Exclude widget
+    if (widget === 'facilities') {
+      const mountainId = params.get('mountain') || 'rinjani';
+      const targetMountain = mountains.find(m => m.id === mountainId) || mountains[0];
+      const theme = (params.get('theme') as any) || 'amber';
+      return (
+        <div className="w-screen h-screen bg-transparent overflow-hidden flex items-center justify-center">
+          <FacilitiesWidget mountain={targetMountain} theme={theme} />
+        </div>
+      );
+    }
+
+    // 6. QR Code widget
+    if (widget === 'qr-code') {
+      const waNumber = params.get('wa') || streamState.whatsappNumber;
+      const mountainName = params.get('mountain') || undefined;
+      const callout = params.get('callout') || undefined;
+      return (
+        <div className="w-screen h-screen bg-transparent overflow-hidden flex items-center justify-center">
+          <QRCodeWidget waNumber={waNumber} mountainName={mountainName} callout={callout} />
+        </div>
+      );
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // VIEW MODE 1: OBS OVERLAY ONLY (?view=overlay)
   // Clean 9:16 vertical overlay for OBS Browser Source without any controls
   // ---------------------------------------------------------------------------
-  if (viewParam === 'overlay') {
+  if (urlParams.view === 'overlay') {
     return (
       <div id="obs-standalone-view" className="w-screen h-screen bg-transparent overflow-hidden">
         <OBSOverlayView
@@ -106,7 +204,7 @@ export default function App() {
   // VIEW MODE 2: REMOTE CONTROLLER ONLY (?view=controller)
   // Handheld Stream Deck for smartphone / tablet
   // ---------------------------------------------------------------------------
-  if (viewParam === 'controller') {
+  if (urlParams.view === 'controller') {
     return (
       <div
         id="remote-controller-view"
@@ -218,44 +316,36 @@ export default function App() {
             <span className="hidden sm:inline">Kustom Overlay</span>
           </button>
 
-          {/* Quick View Mode Links */}
-          <div className="hidden lg:flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+          {/* Tab Switchers: Widget Hub vs Dual Studio */}
+          <div className="flex items-center gap-1 bg-slate-800/90 p-1 rounded-2xl border border-slate-700 shadow-inner">
             <button
-              onClick={() => {
-                const url = new URL(window.location.href);
-                url.searchParams.delete('view');
-                window.history.pushState({}, '', url);
-                setViewParam('studio');
-              }}
-              className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 flex items-center gap-1"
+              onClick={() => setStudioTab('hub')}
+              id="tab-btn-widget-hub"
+              className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition ${
+                studioTab === 'hub'
+                  ? 'bg-amber-400 text-slate-950 shadow-md'
+                  : 'text-slate-300 hover:text-white'
+              }`}
             >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Dual Studio</span>
+              <Link className="w-3.5 h-3.5" />
+              <span>Link Widget OBS</span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-slate-950 text-amber-300">
+                Baru
+              </span>
             </button>
 
-            <a
-              href="?view=overlay"
-              target="_blank"
-              rel="noreferrer"
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1 transition hover:bg-slate-700"
-              title="Buka Overlay khusus OBS Browser Source di tab baru"
+            <button
+              onClick={() => setStudioTab('dual')}
+              id="tab-btn-dual-studio"
+              className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition ${
+                studioTab === 'dual'
+                  ? 'bg-amber-400 text-slate-950 shadow-md'
+                  : 'text-slate-300 hover:text-white'
+              }`}
             >
-              <Tv className="w-3.5 h-3.5 text-amber-400" />
-              <span>OBS Layar (9:16)</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </a>
-
-            <a
-              href="?view=controller"
-              target="_blank"
-              rel="noreferrer"
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1 transition hover:bg-slate-700"
-              title="Buka Remote Controller di tab baru atau HP"
-            >
-              <Smartphone className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Remote HP</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </a>
+              <Layers className="w-3.5 h-3.5" />
+              <span>Dual Studio OBS</span>
+            </button>
           </div>
 
           <button
@@ -270,7 +360,7 @@ export default function App() {
           <button
             onClick={() => setIsOBSGuideOpen(true)}
             id="btn-nav-obs-guide"
-            className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-md transition"
+            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-black border border-amber-500/40 flex items-center gap-1.5 transition"
           >
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Panduan OBS</span>
@@ -278,8 +368,17 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Workspace Layout */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* Main Content Body */}
+      {studioTab === 'hub' ? (
+        <WidgetHub
+          mountains={mountains}
+          whatsappNumber={streamState.whatsappNumber}
+          onOpenMountainManager={() => setIsMountainManagerOpen(true)}
+          onOpenFullOBSGuide={() => setIsOBSGuideOpen(true)}
+        />
+      ) : (
+        /* Main Dual Workspace Layout */
+        <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: OBS Live Monitor (9:16 Aspect) */}
         <section
           id="obs-live-monitor-section"
@@ -345,6 +444,7 @@ export default function App() {
           />
         </section>
       </main>
+      )}
 
       {/* Modals */}
       {isOverlayCustomizerOpen && (

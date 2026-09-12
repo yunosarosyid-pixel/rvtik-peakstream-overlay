@@ -15,7 +15,28 @@
   animation: marquee 20s linear infinite;
 }
 
-.animate-marquee:hover {
+.animate-marquee-slow {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee-normal {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 18s linear infinite;
+}
+
+.animate-marquee-fast {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee-slow:hover,
+.animate-marquee-normal:hover,
+.animate-marquee-fast:hover {
   animation-play-state: paused;
 }
 
