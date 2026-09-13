@@ -1252,9 +1252,21 @@
         const text = document.getElementById('connText');
         if (status.mode === 'supabase') {
           badge.className = 'conn-status-badge';
+          badge.style.background = '';
+          badge.style.color = '';
+          badge.style.borderColor = '';
           text.textContent = 'Supabase Cloud Realtime Aktif';
+        } else if (status.mode === 'server') {
+          badge.className = 'conn-status-badge';
+          badge.style.background = 'rgba(0, 200, 83, 0.15)';
+          badge.style.color = '#00e676';
+          badge.style.borderColor = 'rgba(0, 200, 83, 0.4)';
+          text.textContent = '⚡ Realtime Server Aktif (OBS Terhubung)';
         } else {
           badge.className = 'conn-status-badge local';
+          badge.style.background = '';
+          badge.style.color = '';
+          badge.style.borderColor = '';
           text.textContent = 'Mode Lokal / Sync Aktif';
         }
       });

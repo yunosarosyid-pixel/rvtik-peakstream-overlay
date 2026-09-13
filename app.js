@@ -310,6 +310,99 @@
     });
   }
 
+  // Real-time server sync via Server-Sent Events (SSE)
+  let sseSource = null;
+  let isServerConnected = false;
+
+  function initServerSync() {
+    if (typeof window === 'undefined') return;
+
+    fetchServerData();
+
+    if (window.EventSource) {
+      try {
+        if (sseSource) {
+          try { sseSource.close(); } catch (e) {}
+        }
+        sseSource = new EventSource('/api/events');
+
+        sseSource.onopen = function () {
+          isServerConnected = true;
+          if (!isSupabaseConnected) {
+            notifyConnection({ connected: true, mode: 'server' });
+          }
+        };
+
+        sseSource.onmessage = function (e) {
+          try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'INIT') {
+              if (msg.data && msg.data.trips && Array.isArray(msg.data.trips) && msg.data.trips.length > 0) {
+                cachedTrips = msg.data.trips;
+                saveLocalTrips(cachedTrips);
+                notifyTrips();
+              }
+              if (msg.data && msg.data.settings) {
+                cachedSettings = { ...cachedSettings, ...msg.data.settings };
+                saveLocalSettings(cachedSettings);
+                currentActiveIndex = cachedSettings.active_trip_index || 0;
+                notifySettings();
+                notifySlide();
+              }
+            } else if (msg.type === 'TRIPS_UPDATE') {
+              cachedTrips = msg.data;
+              saveLocalTrips(cachedTrips);
+              notifyTrips();
+              notifySlide();
+            } else if (msg.type === 'SETTINGS_UPDATE') {
+              cachedSettings = { ...cachedSettings, ...msg.data };
+              saveLocalSettings(cachedSettings);
+              if (typeof msg.data.active_trip_index === 'number') {
+                currentActiveIndex = msg.data.active_trip_index;
+                notifySlide();
+              }
+              notifySettings();
+            } else if (msg.type === 'SLIDE_CHANGE') {
+              currentActiveIndex = typeof msg.data === 'number' ? msg.data : 0;
+              notifySlide();
+            }
+          } catch (err) {}
+        };
+
+        sseSource.onerror = function () {
+          isServerConnected = false;
+        };
+      } catch (err) {
+        console.warn('SSE connection init error:', err);
+      }
+    }
+  }
+
+  async function fetchServerData() {
+    try {
+      const res = await fetch('/api/trips');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.trips) && json.trips.length > 0) {
+          cachedTrips = json.trips;
+          saveLocalTrips(cachedTrips);
+          notifyTrips();
+        }
+      }
+      const sRes = await fetch('/api/settings');
+      if (sRes.ok) {
+        const sJson = await sRes.json();
+        if (sJson.success && sJson.settings) {
+          cachedSettings = { ...cachedSettings, ...sJson.settings };
+          saveLocalSettings(cachedSettings);
+          currentActiveIndex = cachedSettings.active_trip_index || 0;
+          notifySettings();
+          notifySlide();
+        }
+      }
+    } catch (e) {}
+  }
+
   function initSupabase(url, key) {
     const supabaseLib = window.supabase;
     if (!supabaseLib || !url || !key) {
@@ -465,6 +558,7 @@
   const api = {
     init: function () {
       loadLocalData();
+      initServerSync();
 
       const params = new URLSearchParams(window.location.search);
       const paramUrl = params.get('sb_url');
@@ -550,6 +644,15 @@
       notifyTrips();
       notifySlide();
 
+      // Sync to built-in server
+      try {
+        fetch('/api/trips/' + encodeURIComponent(tripId) + '/slot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ delta, slot: newSlot })
+        }).catch(() => {});
+      } catch (e) {}
+
       if (isSupabaseConnected && supabaseClient) {
         try {
           await supabaseClient
@@ -582,6 +685,15 @@
       broadcast('TRIPS_UPDATE', updated);
       notifyTrips();
       notifySlide();
+
+      // Sync to built-in server immediately
+      try {
+        fetch('/api/trips', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(finalTrip)
+        }).catch(() => {});
+      } catch (e) {}
 
       if (isSupabaseConnected && supabaseClient) {
         try {
@@ -628,6 +740,13 @@
       notifyTrips();
       notifySlide();
 
+      // Sync to built-in server
+      try {
+        fetch('/api/trips/' + encodeURIComponent(tripId), {
+          method: 'DELETE'
+        }).catch(() => {});
+      } catch (e) {}
+
       if (isSupabaseConnected && supabaseClient) {
         try {
           await supabaseClient.from('trips').delete().eq('id', tripId);
@@ -652,6 +771,15 @@
       broadcast('SLIDE_CHANGE', { index: safeIndex });
       broadcast('SETTINGS_UPDATE', cachedSettings);
       notifySlide();
+
+      // Sync to built-in server
+      try {
+        fetch('/api/slide', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ index: safeIndex })
+        }).catch(() => {});
+      } catch (e) {}
 
       if (isSupabaseConnected && supabaseClient) {
         try {
@@ -678,6 +806,15 @@
       saveLocalSettings(cachedSettings);
       broadcast('SETTINGS_UPDATE', cachedSettings);
       notifySettings();
+
+      // Sync to built-in server
+      try {
+        fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newFields)
+        }).catch(() => {});
+      } catch (e) {}
 
       if (isSupabaseConnected && supabaseClient) {
         try {
@@ -745,6 +882,10 @@
       notifyTrips();
       notifySettings();
       notifySlide();
+
+      try {
+        fetch('/api/reset', { method: 'POST' }).catch(() => {});
+      } catch (e) {}
     }
   };
 
