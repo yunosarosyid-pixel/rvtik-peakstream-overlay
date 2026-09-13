@@ -445,7 +445,15 @@
         </div>
         <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;">Kontrol Remote Real-Time & Live Preview Simulator (TikTok 9:16)</div>
       </div>
-      <div style="display: flex; gap: 8px; align-items: center;">
+      <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <button id="btnHeaderSync" class="btn-action" style="padding: 6px 14px; font-size: 12px; background: #00e676; color: #000;" onclick="syncNow()">
+          <span style="font-size: 13px;">⚡</span> Sync ke OBS
+        </button>
+        <button id="btnRoomBadge" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;" onclick="promptChangeRoom()">
+          <span>☁️ Room:</span>
+          <strong id="currentRoomText" style="color: #00e676;">peakteam_live</strong>
+          <span style="font-size: 10px;">✏️</span>
+        </button>
         <div id="connBadge" class="conn-status-badge local">
           <span style="width: 8px; height: 8px; border-radius: 50%; background: currentColor;"></span>
           <span id="connText">Mode Lokal / Sync Aktif</span>
@@ -556,37 +564,51 @@
         </section>
 
         <!-- SECTION 5: OBS BROWSER SOURCE QUICK LINKS -->
-        <section class="section-card">
-          <div class="section-title">
-            <span>🔗 Link Browser Source OBS Studio</span>
+        <section class="section-card" style="border-color: rgba(0, 230, 118, 0.35); background: rgba(0, 230, 118, 0.03);">
+          <div class="section-title" style="color: #00e676; border-color: rgba(0, 230, 118, 0.25);">
+            <span>🔗 Link Browser Source OBS Studio (Real-Time Sync)</span>
+            <button class="btn-action" style="background: #00e676; color: #000; font-size: 11px; padding: 6px 14px;" onclick="syncNow()">
+              ⚡ Sync ke OBS Sekarang
+            </button>
           </div>
-          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">
-            Salin URL ini ke <strong>Browser Source</strong> OBS Studio:
-          </p>
+          <div style="background: rgba(0, 0, 0, 0.45); padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255, 255, 255, 0.12); font-size: 12px; color: #cbd5e1; line-height: 1.5;">
+            💡 <strong>Panduan Link OBS:</strong><br>
+            • <strong>Tombol "📋 Salin Link Auto-Sync":</strong> Menggunakan Cloud Room Sync otomatis. Saat Anda tambah trip baru atau klik tombol slide di admin, OBS langsung berubah secara instan.<br>
+            • <strong>Tombol "💾 Salin Link + Data":</strong> Menempelkan seluruh data trip Anda langsung ke dalam link URL. 100% langsung muncul di OBS bahkan jika tanpa koneksi database.
+          </div>
 
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="background: #080b10; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="background: #080b10; padding: 12px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
               <div>
                 <strong style="color: #ffffff; font-size: 13px;">1. Card Open Trip (Serba Putih)</strong>
-                <div style="font-size: 11px; color: #94a3b8;">Ukuran OBS: 440 x 590 px</div>
+                <div style="font-size: 11px; color: #94a3b8;">Ukuran OBS: 440 x 590 px • Pamflet Destinasi Vertikal</div>
               </div>
-              <button class="btn-secondary" onclick="copyUrl('/card.html')">Salin URL</button>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn-secondary" onclick="copyObsUrl('/card.html', false)">📋 Salin Link Auto-Sync</button>
+                <button class="btn-action" style="padding: 9px 12px; font-size: 12px;" onclick="copyObsUrl('/card.html', true)">💾 Salin Link + Data</button>
+              </div>
             </div>
 
-            <div style="background: #080b10; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: #080b10; padding: 12px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
               <div>
                 <strong style="color: #ffffff; font-size: 13px;">2. Floating WhatsApp Booking Bar</strong>
-                <div style="font-size: 11px; color: #94a3b8;">Ukuran OBS: 380 x 75 px</div>
+                <div style="font-size: 11px; color: #94a3b8;">Ukuran OBS: 380 x 75 px • Banner Info Booking WA & QRIS</div>
               </div>
-              <button class="btn-secondary" onclick="copyUrl('/cta.html')">Salin URL</button>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn-secondary" onclick="copyObsUrl('/cta.html', false)">📋 Salin Link Auto-Sync</button>
+                <button class="btn-action" style="padding: 9px 12px; font-size: 12px;" onclick="copyObsUrl('/cta.html', true)">💾 Salin Link + Data</button>
+              </div>
             </div>
 
-            <div style="background: #080b10; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: #080b10; padding: 12px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
               <div>
                 <strong style="color: #ffffff; font-size: 13px;">3. Running Text Footer</strong>
-                <div style="font-size: 11px; color: #94a3b8;">Ukuran OBS: 1080 x 55 px</div>
+                <div style="font-size: 11px; color: #94a3b8;">Ukuran OBS: 1080 x 55 px • Teks Berjalan Promo Live</div>
               </div>
-              <button class="btn-secondary" onclick="copyUrl('/running-text.html')">Salin URL</button>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn-secondary" onclick="copyObsUrl('/running-text.html', false)">📋 Salin Link Auto-Sync</button>
+                <button class="btn-action" style="padding: 9px 12px; font-size: 12px;" onclick="copyObsUrl('/running-text.html', true)">💾 Salin Link + Data</button>
+              </div>
             </div>
           </div>
         </section>
@@ -866,13 +888,39 @@
       updateRunningTextLive(text);
     }
 
+    function syncNow() {
+      if (window.OpenTripSync) {
+        window.OpenTripSync.syncAllToCloud();
+        showToast('⚡ Data trip berhasil disinkronkan ke seluruh overlay OBS!');
+      }
+    }
+
+    function copyObsUrl(path, includeData = false) {
+      if (window.OpenTripSync) {
+        const url = window.OpenTripSync.getShareableObsUrl(path, includeData);
+        navigator.clipboard.writeText(url).then(() => {
+          showToast(`URL ${includeData ? '(dengan Data Langsung)' : '(Auto-Sync Cloud)'} disalin ke clipboard!`);
+        }).catch(() => {
+          prompt('Salin URL ini untuk OBS:', url);
+        });
+      } else {
+        copyUrl(path);
+      }
+    }
+
+    function promptChangeRoom() {
+      const current = window.OpenTripSync ? window.OpenTripSync.getRoomId() : 'peakteam_live';
+      const input = prompt('Masukkan Kode / Nama Room Sync untuk OBS Anda:\n(Pastikan link di OBS dan admin menggunakan room yang sama)', current);
+      if (input && input.trim() && input.trim() !== current) {
+        const clean = window.OpenTripSync.setRoomId(input.trim());
+        const roomEl = document.getElementById('currentRoomText');
+        if (roomEl) roomEl.textContent = clean;
+        showToast(`Room Sync diubah ke: ${clean}`);
+      }
+    }
+
     function copyUrl(path) {
-      const full = window.location.origin + path;
-      navigator.clipboard.writeText(full).then(() => {
-        showToast('URL disalin ke clipboard: ' + full);
-      }).catch(() => {
-        prompt('Salin URL ini:', full);
-      });
+      copyObsUrl(path, false);
     }
 
     // Toggle Mobile Preview
@@ -1250,12 +1298,23 @@
       window.OpenTripSync.onConnectionChange((status) => {
         const badge = document.getElementById('connBadge');
         const text = document.getElementById('connText');
+        const roomEl = document.getElementById('currentRoomText');
+        if (roomEl && status.roomId) {
+          roomEl.textContent = status.roomId;
+        }
+
         if (status.mode === 'supabase') {
           badge.className = 'conn-status-badge';
-          badge.style.background = '';
-          badge.style.color = '';
-          badge.style.borderColor = '';
+          badge.style.background = 'rgba(0, 200, 83, 0.15)';
+          badge.style.color = '#00e676';
+          badge.style.borderColor = 'rgba(0, 200, 83, 0.4)';
           text.textContent = 'Supabase Cloud Realtime Aktif';
+        } else if (status.mode === 'cloud') {
+          badge.className = 'conn-status-badge';
+          badge.style.background = 'rgba(0, 230, 118, 0.18)';
+          badge.style.color = '#00e676';
+          badge.style.borderColor = 'rgba(0, 230, 118, 0.5)';
+          text.textContent = `🟢 Cloud Sync Aktif (${status.roomId || 'OBS Ready'})`;
         } else if (status.mode === 'server') {
           badge.className = 'conn-status-badge';
           badge.style.background = 'rgba(0, 200, 83, 0.15)';

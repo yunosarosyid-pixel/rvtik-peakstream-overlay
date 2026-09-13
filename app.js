@@ -15,133 +15,76 @@
 
   const DEFAULT_TRIPS = [
     {
-      id: 'sindoro-01',
-      name: 'GUNUNG SINDORO',
-      via: 'VIA WATU LUNYU',
-      slogan: 'Yuk Ikut Mendaki...',
-      mdpl: 3153,
-      date_range: '5 Hari 4 Malam',
-      duration: '5 Hari 4 Malam',
-      price: 'IDR 950.000',
-      meeting_point: 'Jakarta - Solo - Madiun - Banyuwangi',
-      mountain_info: 'Watu Play Mountain',
-      slot_remaining: 6,
+      id: 'argopuro-01',
+      name: 'GUNUNG ARGOPURO',
+      via: 'VIA BADERAN LINTAS BREMI',
+      slogan: 'Yuk GASSS Mendaki Offline',
+      mdpl: 3088,
+      date_range: '4 Hari 3 Malam',
+      duration: '4 Hari 3 Malam',
+      price: 'IDR 1.800.000',
+      meeting_point: 'JAKARTA SOLO MADIUN BASECAMP',
+      mountain_info: 'Jalur Terpanjang di Pulau Jawa',
+      slot_remaining: 10,
       slot_total: 15,
-      brand_handle: '@KITA ADVENTURE INDONESIA',
-      image_url: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1000&q=80',
-      badge_text: 'POPULAR',
+      brand_handle: '@kita_adventure',
+      image_url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80',
+      badge_text: 'LIMITED',
       order_index: 0,
       is_active: true
     },
     {
-      id: 'rinjani-02',
-      name: 'GUNUNG RINJANI',
-      via: 'VIA SEMBALUN',
-      slogan: 'Yuk Ikut Mendaki...',
-      mdpl: 3726,
-      date_range: '4 Hari 3 Malam',
-      duration: '4 Hari 3 Malam',
-      price: 'IDR 2.450.000',
-      meeting_point: 'Bandara Lombok - Mataram',
-      mountain_info: 'Danau Segara Anak',
-      slot_remaining: 3,
-      slot_total: 12,
-      brand_handle: '@KITA ADVENTURE INDONESIA',
-      image_url: 'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=1000&q=80',
-      badge_text: 'LIMITED SEAT',
+      id: 'lawu-02',
+      name: 'GUNUNG LAWU',
+      via: 'VIA BABAR',
+      slogan: 'Yuk GASSS Mendaki Offline',
+      mdpl: 3265,
+      date_range: '2 Hari 1 Malam',
+      duration: '2 Hari 1 Malam',
+      price: 'IDR 650000',
+      meeting_point: 'JAKARTA SOLO MADIUN BASECAMP',
+      mountain_info: 'Hargo Dumilah & Warung Mbok Yem',
+      slot_remaining: 15,
+      slot_total: 20,
+      brand_handle: '@kita_adventure',
+      image_url: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
+      badge_text: 'BEST SELLER',
       order_index: 1,
       is_active: true
     },
     {
-      id: 'prau-03',
-      name: 'GUNUNG PRAU',
-      via: 'VIA PATAKBANTENG',
-      slogan: 'Yuk Ikut Mendaki...',
-      mdpl: 2565,
+      id: 'sindoro-03',
+      name: 'GUNUNG SINDORO',
+      via: 'VIA WATU LUNYU',
+      slogan: 'Yuk GASSS Mendaki Offline',
+      mdpl: 3153,
       date_range: '2 Hari 1 Malam',
       duration: '2 Hari 1 Malam',
-      price: 'IDR 550.000',
-      meeting_point: 'Stasiun Purwokerto - Wonosobo',
-      mountain_info: 'Sunrise Camp Bukit Teletubbies',
-      slot_remaining: 8,
-      slot_total: 20,
-      brand_handle: '@KITA ADVENTURE INDONESIA',
-      image_url: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
-      badge_text: 'BEST SELLER',
-      order_index: 2,
-      is_active: true
-    },
-    {
-      id: 'merbabu-04',
-      name: 'GUNUNG MERBABU',
-      via: 'VIA SUWANTING',
-      slogan: 'Yuk Ikut Mendaki...',
-      mdpl: 3142,
-      date_range: '3 Hari 2 Malam',
-      duration: '3 Hari 2 Malam',
-      price: 'IDR 850.000',
-      meeting_point: 'Solo - Yogyakarta - Semarang',
-      mountain_info: 'Sabana Indah & Triangulasi',
-      slot_remaining: 5,
-      slot_total: 16,
-      brand_handle: '@KITA ADVENTURE INDONESIA',
-      image_url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80',
-      badge_text: 'PROMO LIVE',
-      order_index: 3,
-      is_active: true
-    },
-    {
-      id: 'bromo-05',
-      name: 'BROMO SUNRISE',
-      via: 'VIA CEMORO LAWANG',
-      slogan: 'Yuk Ikut Mendaki...',
-      mdpl: 2329,
-      date_range: '2 Hari 1 Malam',
-      duration: '2 Hari 1 Malam',
-      price: 'IDR 450.000',
-      meeting_point: 'Stasiun Malang - Surabaya',
-      mountain_info: 'Penanjakan & Pasir Berbisik',
+      price: 'IDR 600000',
+      meeting_point: 'JAKARTA SOLO MADIUN BASECAMP',
+      mountain_info: 'Watu Play Mountain',
       slot_remaining: 10,
-      slot_total: 25,
-      brand_handle: '@KITA ADVENTURE INDONESIA',
-      image_url: 'https://images.unsplash.com/photo-1602153508753-4ace888c10a0?auto=format&fit=crop&w=1000&q=80',
-      badge_text: 'WEEKEND TRIP',
-      order_index: 4,
-      is_active: true
-    },
-    {
-      id: 'ijen-06',
-      name: 'KAWAH IJEN',
-      via: 'VIA PALTUDING',
-      slogan: 'Yuk Ikut Mendaki...',
-      mdpl: 2799,
-      date_range: '3 Hari 2 Malam',
-      duration: '3 Hari 2 Malam',
-      price: 'IDR 950.000',
-      meeting_point: 'Surabaya - Banyuwangi',
-      mountain_info: 'Blue Fire & Sunrise Kawah',
-      slot_remaining: 4,
-      slot_total: 18,
-      brand_handle: '@KITA ADVENTURE INDONESIA',
-      image_url: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1000&q=80',
-      badge_text: 'BLUE FIRE',
-      order_index: 5,
+      slot_total: 15,
+      brand_handle: '@kita_adventure',
+      image_url: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1000&q=80',
+      badge_text: 'PROMO',
+      order_index: 2,
       is_active: true
     }
   ];
 
   const DEFAULT_SETTINGS = {
     id: 'stream_settings',
-    running_text: '⛰️ OPEN TRIP GUNUNG NUSANTARA SPESIAL LIVE STREAMING • BOOKING SEKARANG HUBUNGI WHATSAPP DI BIO • SISA SEAT TERBATAS SIAPA CEPAT DIA DAPAT! • FASILITAS LENGKAP & GUIDE BERPENGALAMAN',
-    active_trip_index: 0,
+    running_text: '⚠️ PERINGATAN: SISA SLOT GUNUNG SINDORO & RINJANI HANYA SISA SEDIKIT! SIAPA CEPAT DIA DAPAT!',
+    active_trip_index: 2,
     auto_slide: true,
     slide_interval_seconds: 8,
-    wa_number: '081234567890 / 081234567890',
-    booking_title: 'BOOKING OPEN TRIP',
-    brand_handle: '@KITA ADVENTURE INDONESIA',
+    wa_number: '0812-3456-7898',
+    booking_title: 'CARA BOOKING PROMO LIVE:',
+    brand_handle: '@kita_adventure',
     qris_image_url: '',
-    cta_headline: 'BOOKING OPEN TRIP',
-    cta_subtext: '081234567890 / 081234567890',
+    cta_headline: 'CARA BOOKING PROMO LIVE:',
+    cta_subtext: '0812-3456-7898',
     theme_preset: 'white-alpine', // white-alpine (video style), cyber-gold, emerald-nature
     animation_style: 'smooth-3d', // smooth-3d, cinematic-zoom, card-flip, slide-drift
     updated_at: new Date().toISOString()
@@ -308,6 +251,194 @@
     connectionListeners.forEach(fn => {
       try { fn(status); } catch (e) { console.error(e); }
     });
+  }
+
+  // Session & Room identifiers for Universal Cloud Sync
+  const myClientSessionId = 'sess_' + Math.random().toString(36).substring(2, 9);
+
+  function getRoomId() {
+    if (typeof window === 'undefined') return 'peakteam_live';
+    const params = new URLSearchParams(window.location.search);
+    const roomParam = params.get('room');
+    if (roomParam && roomParam.trim()) {
+      return roomParam.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+    }
+    try {
+      const stored = localStorage.getItem('OPENTRIP_ROOM_ID');
+      if (stored && stored.trim()) return stored.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+    } catch (e) {}
+
+    // Derive from domain if hosted on Vercel, Netlify, or custom domain
+    if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      const subdomain = window.location.hostname.split('.')[0];
+      if (subdomain) {
+        return subdomain.replace(/[^a-zA-Z0-9_-]/g, '_');
+      }
+    }
+    return 'peakteam_live';
+  }
+
+  function checkUrlHashData() {
+    if (typeof window === 'undefined') return;
+    try {
+      const hash = window.location.hash;
+      if (hash && hash.includes('data=')) {
+        const match = hash.match(/data=([^&]+)/);
+        if (match && match[1]) {
+          const raw = decodeURIComponent(match[1]);
+          const jsonStr = decodeURIComponent(escape(atob(raw)));
+          const decoded = JSON.parse(jsonStr);
+          if (decoded && Array.isArray(decoded.trips) && decoded.trips.length > 0) {
+            cachedTrips = decoded.trips;
+            saveLocalTrips(cachedTrips);
+          }
+          if (decoded && decoded.settings) {
+            cachedSettings = { ...cachedSettings, ...decoded.settings };
+            saveLocalSettings(cachedSettings);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading URL hash data:', e);
+    }
+  }
+
+  // =========================================================================
+  // UNIVERSAL CLOUD REALTIME ENGINE (Works across Chrome, OBS, Vercel & Mobile)
+  // =========================================================================
+  let cloudEventSource = null;
+  let isCloudConnected = false;
+
+  function initCloudSync() {
+    if (typeof window === 'undefined') return;
+    const roomId = getRoomId();
+    const topic = 'opt_' + roomId;
+
+    fetchLatestCloudState(topic);
+
+    if (window.EventSource) {
+      try {
+        if (cloudEventSource) {
+          try { cloudEventSource.close(); } catch (e) {}
+        }
+        cloudEventSource = new EventSource('https://ntfy.sh/' + topic + '/sse');
+
+        cloudEventSource.onopen = function () {
+          isCloudConnected = true;
+          if (!isSupabaseConnected) {
+            notifyConnection({ connected: true, mode: 'cloud', roomId: roomId });
+          }
+        };
+
+        cloudEventSource.onmessage = function (e) {
+          try {
+            const raw = JSON.parse(e.data);
+            if (raw.attachment && raw.attachment.url) {
+              fetch(raw.attachment.url)
+                .then(r => r.json())
+                .then(p => handleIncomingCloudMessage(p))
+                .catch(() => {});
+              return;
+            }
+            if (raw.message) {
+              const p = JSON.parse(raw.message);
+              handleIncomingCloudMessage(p);
+            }
+          } catch (err) {}
+        };
+
+        cloudEventSource.onerror = function () {
+          isCloudConnected = false;
+        };
+      } catch (err) {
+        console.warn('Cloud SSE error:', err);
+      }
+    }
+
+    // Periodic cloud poll fallback (every 4 seconds) to guarantee freshness in OBS
+    setInterval(() => {
+      fetchLatestCloudState(topic);
+    }, 4000);
+  }
+
+  function handleIncomingCloudMessage(msg) {
+    if (!msg || typeof msg !== 'object') return;
+    if (msg.senderId && msg.senderId === myClientSessionId) return;
+
+    if (msg.type === 'STATE_SYNC') {
+      if (Array.isArray(msg.trips) && msg.trips.length > 0) {
+        cachedTrips = msg.trips;
+        saveLocalTrips(cachedTrips);
+        notifyTrips();
+      }
+      if (msg.settings) {
+        cachedSettings = { ...cachedSettings, ...msg.settings };
+        saveLocalSettings(cachedSettings);
+        notifySettings();
+      }
+      if (typeof msg.activeIndex === 'number') {
+        currentActiveIndex = msg.activeIndex;
+        notifySlide();
+      }
+    } else if (msg.type === 'SLIDE_CHANGE') {
+      currentActiveIndex = typeof msg.index === 'number' ? msg.index : 0;
+      cachedSettings.active_trip_index = currentActiveIndex;
+      saveLocalSettings(cachedSettings);
+      notifySlide();
+    } else if (msg.type === 'TRIPS_UPDATE') {
+      if (Array.isArray(msg.trips)) {
+        cachedTrips = msg.trips;
+        saveLocalTrips(cachedTrips);
+        notifyTrips();
+        notifySlide();
+      }
+    } else if (msg.type === 'SETTINGS_UPDATE') {
+      if (msg.settings) {
+        cachedSettings = { ...cachedSettings, ...msg.settings };
+        saveLocalSettings(cachedSettings);
+        notifySettings();
+      }
+    }
+  }
+
+  async function fetchLatestCloudState(topic) {
+    try {
+      const res = await fetch('https://ntfy.sh/' + topic + '/json?poll=1');
+      if (res.ok) {
+        const text = await res.text();
+        const lines = text.trim().split('\n').filter(Boolean);
+        for (let i = lines.length - 1; i >= 0; i--) {
+          try {
+            const raw = JSON.parse(lines[i]);
+            if (raw.attachment && raw.attachment.url) {
+              const aRes = await fetch(raw.attachment.url);
+              const p = await aRes.json();
+              handleIncomingCloudMessage(p);
+              break;
+            } else if (raw.message) {
+              const p = JSON.parse(raw.message);
+              handleIncomingCloudMessage(p);
+              break;
+            }
+          } catch (e) {}
+        }
+      }
+    } catch (e) {}
+  }
+
+  async function publishCloudSync(messageObj) {
+    try {
+      const roomId = getRoomId();
+      const topic = 'opt_' + roomId;
+      messageObj.senderId = myClientSessionId;
+      messageObj.timestamp = Date.now();
+
+      fetch('https://ntfy.sh/' + topic, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(messageObj)
+      }).catch(() => {});
+    } catch (e) {}
   }
 
   // Real-time server sync via Server-Sent Events (SSE)
@@ -557,8 +688,10 @@
 
   const api = {
     init: function () {
+      checkUrlHashData();
       loadLocalData();
       initServerSync();
+      initCloudSync();
 
       const params = new URLSearchParams(window.location.search);
       const paramUrl = params.get('sb_url');
@@ -576,7 +709,7 @@
       if (supabaseUrl && supabaseKey) {
         initSupabase(supabaseUrl, supabaseKey);
       } else {
-        notifyConnection({ connected: false, mode: 'local' });
+        notifyConnection({ connected: true, mode: 'cloud', roomId: getRoomId() });
       }
 
       setTimeout(() => {
@@ -600,6 +733,46 @@
       return currentActiveIndex;
     },
 
+    getRoomId: function () {
+      return getRoomId();
+    },
+
+    setRoomId: function (newRoomId) {
+      if (!newRoomId || !newRoomId.trim()) return;
+      const clean = newRoomId.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+      try {
+        localStorage.setItem('OPENTRIP_ROOM_ID', clean);
+      } catch (e) {}
+      initCloudSync();
+      this.syncAllToCloud();
+      return clean;
+    },
+
+    syncAllToCloud: function () {
+      publishCloudSync({
+        type: 'STATE_SYNC',
+        trips: cachedTrips,
+        settings: cachedSettings,
+        activeIndex: currentActiveIndex
+      });
+      return true;
+    },
+
+    getShareableObsUrl: function (route, includeData = false) {
+      if (typeof window === 'undefined') return route;
+      const base = window.location.origin + '/' + route.replace(/^\//, '');
+      const roomId = getRoomId();
+      let url = `${base}?room=${encodeURIComponent(roomId)}`;
+      if (includeData && cachedTrips.length > 0) {
+        try {
+          const payload = JSON.stringify({ trips: cachedTrips, settings: cachedSettings });
+          const b64 = btoa(unescape(encodeURIComponent(payload)));
+          url += `#data=${encodeURIComponent(b64)}`;
+        } catch (e) {}
+      }
+      return url;
+    },
+
     onTripsChange: function (callback) {
       tripsListeners.add(callback);
       if (cachedTrips.length > 0) callback(cachedTrips);
@@ -620,7 +793,11 @@
 
     onConnectionChange: function (callback) {
       connectionListeners.add(callback);
-      callback({ connected: isSupabaseConnected, mode: isSupabaseConnected ? 'supabase' : 'local' });
+      callback({
+        connected: isSupabaseConnected || isCloudConnected || isServerConnected,
+        mode: isSupabaseConnected ? 'supabase' : isCloudConnected ? 'cloud' : isServerConnected ? 'server' : 'local',
+        roomId: getRoomId()
+      });
       return () => connectionListeners.delete(callback);
     },
 
@@ -643,6 +820,14 @@
       broadcast('TRIPS_UPDATE', cachedTrips);
       notifyTrips();
       notifySlide();
+
+      // Broadcast to universal Cloud Sync for OBS
+      publishCloudSync({
+        type: 'STATE_SYNC',
+        trips: cachedTrips,
+        settings: cachedSettings,
+        activeIndex: currentActiveIndex
+      });
 
       // Sync to built-in server
       try {
@@ -686,6 +871,14 @@
       notifyTrips();
       notifySlide();
 
+      // Broadcast to universal Cloud Sync for OBS
+      publishCloudSync({
+        type: 'STATE_SYNC',
+        trips: updated,
+        settings: cachedSettings,
+        activeIndex: currentActiveIndex
+      });
+
       // Sync to built-in server immediately
       try {
         fetch('/api/trips', {
@@ -700,7 +893,6 @@
           const res = await supabaseClient.from('trips').upsert(finalTrip);
           if (res.error) {
             console.warn('Supabase upsert warning, retrying with core columns:', res.error);
-            // Fallback for tables that don't yet have via, slogan, meeting_point, mountain_info, brand_handle columns
             const coreTrip = {
               id: finalTrip.id,
               name: finalTrip.name,
@@ -740,6 +932,14 @@
       notifyTrips();
       notifySlide();
 
+      // Broadcast to universal Cloud Sync for OBS
+      publishCloudSync({
+        type: 'STATE_SYNC',
+        trips: updated,
+        settings: cachedSettings,
+        activeIndex: currentActiveIndex
+      });
+
       // Sync to built-in server
       try {
         fetch('/api/trips/' + encodeURIComponent(tripId), {
@@ -771,6 +971,12 @@
       broadcast('SLIDE_CHANGE', { index: safeIndex });
       broadcast('SETTINGS_UPDATE', cachedSettings);
       notifySlide();
+
+      // Broadcast to universal Cloud Sync for OBS
+      publishCloudSync({
+        type: 'SLIDE_CHANGE',
+        index: safeIndex
+      });
 
       // Sync to built-in server
       try {
@@ -806,6 +1012,12 @@
       saveLocalSettings(cachedSettings);
       broadcast('SETTINGS_UPDATE', cachedSettings);
       notifySettings();
+
+      // Broadcast to universal Cloud Sync for OBS
+      publishCloudSync({
+        type: 'SETTINGS_UPDATE',
+        settings: cachedSettings
+      });
 
       // Sync to built-in server
       try {
@@ -882,6 +1094,13 @@
       notifyTrips();
       notifySettings();
       notifySlide();
+
+      publishCloudSync({
+        type: 'STATE_SYNC',
+        trips: cachedTrips,
+        settings: cachedSettings,
+        activeIndex: 0
+      });
 
       try {
         fetch('/api/reset', { method: 'POST' }).catch(() => {});

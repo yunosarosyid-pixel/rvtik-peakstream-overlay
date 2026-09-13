@@ -76,7 +76,7 @@ export default function App() {
     slide_interval_seconds: 8,
   });
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [connStatus, setConnStatus] = useState<'local' | 'supabase' | 'server'>('server');
+  const [connStatus, setConnStatus] = useState<'local' | 'supabase' | 'server' | 'cloud'>('cloud');
 
   useEffect(() => {
     // Check if OpenTripSync is loaded via /app.js
@@ -86,7 +86,7 @@ export default function App() {
       sync.onTripsChange((newTrips: TripItem[]) => setTrips(newTrips));
       sync.onSettingsChange((newSettings: StreamSettings) => setSettings(newSettings));
       sync.onSlideChange((idx: number) => setCurrentSlide(idx));
-      sync.onConnectionChange((status: { mode: 'local' | 'supabase' | 'server' }) => {
+      sync.onConnectionChange((status: { mode: 'local' | 'supabase' | 'server' | 'cloud' }) => {
         setConnStatus(status.mode);
       });
     }
@@ -273,7 +273,7 @@ END $$;`;
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              <span>{connStatus === 'supabase' ? 'Supabase Realtime' : connStatus === 'server' ? 'Realtime Sync Aktif (OBS Ready)' : 'Live Sync Active'}</span>
+              <span>{connStatus === 'supabase' ? 'Supabase Realtime' : connStatus === 'cloud' ? 'Cloud Realtime Aktif (OBS Ready)' : connStatus === 'server' ? 'Server Sync Aktif (OBS Ready)' : 'Live Sync Active'}</span>
             </div>
 
             <a
