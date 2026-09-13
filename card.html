@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OBS Overlay: Card Open Trip</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700;1,800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Transparansi murni untuk OBS Studio Browser Source */
+    html, body {
+      background: transparent !important;
+      margin: 0;
+      padding: 16px;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+  </style>
+</head>
+<body class="obs-overlay" data-theme="white-alpine">
+
+  <!-- Trip Card Container (Exact Video Match) -->
+  <div class="video-card-container" id="tripCard">
+    <!-- Mountain Background Image -->
+    <img id="tripImage" class="video-card-bg-img" src="https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1000&q=80" alt="Mountain Trip" />
+    <div class="video-card-overlay-gradient"></div>
+
+    <div class="video-card-content">
+      <!-- Top Row: Cursive Slogan -->
+      <div class="video-card-top-row">
+        <div class="video-card-slogan" id="tripSlogan">Yuk Ikut Mendaki...</div>
+      </div>
+
+      <!-- Destination Name & Via -->
+      <div class="video-card-title-section">
+        <h1 class="video-card-title" id="tripName">GUNUNG SINDORO</h1>
+        <div class="video-card-via" id="tripVia">VIA WATU LUNYU</div>
+      </div>
+
+      <!-- Center Section: Price, Route & Badges -->
+      <div class="video-card-center-section">
+        <div class="video-card-start-from">Start from</div>
+        <div class="video-card-price-pill mono-num" id="tripPrice">IDR 950.000</div>
+        
+        <div class="video-card-route-pill" id="tripMeetingPoint">
+          Jakarta - Solo - Madiun - Banyuwangi
+        </div>
+
+        <div class="video-card-sub-badges">
+          <div class="video-card-pill-info" id="tripDurationBadge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+              <line x1="16" x2="16" y1="2" y2="6"></line>
+              <line x1="8" x2="8" y1="2" y2="6"></line>
+              <line x1="3" x2="21" y1="10" y2="10"></line>
+            </svg>
+            <span id="tripDurationText">5 Hari 4 Malam</span>
+          </div>
+          <div class="video-card-pill-info" id="tripPeakBadge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+            </svg>
+            <span id="tripPeakText">Watu Play Mountain</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto Slide Progress Bar -->
+    <div class="slide-progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Realtime Sync Engine -->
+  <script src="/app.js"></script>
+
+  <script>
+    (function () {
+      let currentTrips = [];
+      let currentSettings = {};
+      let currentIndex = 0;
+      let slideTimer = null;
+      let progressInterval = null;
+
+      const cardEl = document.getElementById('tripCard');
+      const nameEl = document.getElementById('tripName');
+      const viaEl = document.getElementById('tripVia');
+      const sloganEl = document.getElementById('tripSlogan');
+      const imageEl = document.getElementById('tripImage');
+      const priceEl = document.getElementById('tripPrice');
+      const routeEl = document.getElementById('tripMeetingPoint');
+      const durationEl = document.getElementById('tripDurationText');
+      const peakEl = document.getElementById('tripPeakText');
+      const progressBarEl = document.getElementById('progressBar');
+
+      function renderTrip(trip, index, total) {
+        if (!trip) return;
+
+        // Apply dynamic animation style
+        const animStyle = currentSettings.animation_style || 'smooth-3d';
+        cardEl.className = 'video-card-container';
+        void cardEl.offsetWidth; // force reflow
+        cardEl.classList.add(`animate-${animStyle}`);
+
+        // Theme
+        if (currentSettings.theme_preset) {
+          document.body.setAttribute('data-theme', currentSettings.theme_preset);
+        }
+
+        nameEl.textContent = trip.name;
+        viaEl.textContent = trip.via || (trip.mdpl ? 'ELEVASI ' + trip.mdpl + ' MDPL' : 'JALUR RESMI');
+        sloganEl.textContent = trip.slogan || 'Yuk Ikut Mendaki...';
+        imageEl.src = trip.image_url || 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1000&q=80';
+        priceEl.textContent = trip.price;
+        routeEl.textContent = trip.meeting_point || 'Meeting Point Fleksibel • Jabodetabek & Jawa';
+        durationEl.textContent = trip.duration || trip.date_range || '3 Hari 2 Malam';
+        peakEl.textContent = trip.mountain_info || (trip.mdpl ? Number(trip.mdpl).toLocaleString('id-ID') + ' MDPL' : 'Puncak Indah');
+      }
+
+      function startAutoSlide() {
+        clearInterval(slideTimer);
+        clearInterval(progressInterval);
+        progressBarEl.style.transition = 'none';
+        progressBarEl.style.width = '0%';
+
+        if (!currentSettings.auto_slide || currentTrips.length <= 1) {
+          progressBarEl.style.display = 'none';
+          return;
+        }
+
+        progressBarEl.style.display = 'block';
+        const intervalSec = currentSettings.slide_interval_seconds || 8;
+        const intervalMs = intervalSec * 1000;
+        let elapsed = 0;
+        const step = 50;
+
+        progressInterval = setInterval(() => {
+          elapsed += step;
+          const percent = Math.min(100, (elapsed / intervalMs) * 100);
+          progressBarEl.style.width = percent + '%';
+        }, step);
+
+        slideTimer = setInterval(() => {
+          if (window.OpenTripSync) {
+            window.OpenTripSync.nextSlide();
+          }
+        }, intervalMs);
+      }
+
+      // Initialize
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!window.OpenTripSync) return;
+
+        window.OpenTripSync.onTripsChange((trips) => {
+          currentTrips = trips;
+          if (currentTrips.length > 0) {
+            const safeIdx = Math.min(currentIndex, currentTrips.length - 1);
+            renderTrip(currentTrips[safeIdx], safeIdx, currentTrips.length);
+          }
+        });
+
+        window.OpenTripSync.onSettingsChange((settings) => {
+          currentSettings = settings;
+          if (currentTrips.length > 0 && currentTrips[currentIndex]) {
+            renderTrip(currentTrips[currentIndex], currentIndex, currentTrips.length);
+          }
+          startAutoSlide();
+        });
+
+        window.OpenTripSync.onSlideChange((index, trip) => {
+          currentIndex = index;
+          if (trip) {
+            renderTrip(trip, index, currentTrips.length);
+          } else if (currentTrips[index]) {
+            renderTrip(currentTrips[index], index, currentTrips.length);
+          }
+          startAutoSlide();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,775 @@
+/* ==============================================================================
+   SERBA PUTIH (ALPINE WHITE) - OBS OVERLAY & ADMIN DASHBOARD
+   Aesthetic: Pure Alpine White (#ffffff), Translucent Frosted Glass, High-Contrast Scenic Mountains
+   ============================================================================== */
+
+:root {
+  --bg-main: #0a0d14;
+  --bg-card: rgba(15, 20, 28, 0.85);
+  --border-white: #ffffff;
+  --white-glow: rgba(255, 255, 255, 0.3);
+  --border-gold: #ffffff; /* Default serba putih */
+  --gold-glow: rgba(255, 255, 255, 0.25);
+  --neon-green: #00e676;
+  --neon-red: #ff1744;
+  --text-main: #ffffff;
+  --text-muted: #cbd5e1;
+  --card-radius: 28px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background transparent for OBS Browser Source */
+body.obs-overlay {
+  background: transparent !important;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Monospace numbers for crisp financial and altitude displays */
+.mono-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-feature-settings: "tnum";
+}
+
+/* ==============================================================================
+   EXACT VIDEO OVERLAY CARD (card.html) - SERBA PUTIH
+   ============================================================================== */
+.video-card-container {
+  width: 400px;
+  min-height: 480px;
+  position: relative;
+  border-radius: var(--card-radius);
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75),
+              0 0 25px rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 24px 22px 28px 22px;
+  color: #ffffff;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: #0b1118;
+}
+
+/* Background image filling the entire card */
+.video-card-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  transition: transform 0.8s ease, filter 0.8s ease;
+}
+
+/* Elegant dark gradient vignettes to guarantee crystal-clear legibility */
+.video-card-overlay-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg, 
+    rgba(0, 0, 0, 0.55) 0%, 
+    rgba(0, 0, 0, 0.15) 32%, 
+    rgba(0, 0, 0, 0.35) 65%, 
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Content layer above image */
+.video-card-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+}
+
+/* Top Header Row */
+.video-card-top-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.video-card-slogan {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
+}
+
+.video-card-emblem {
+  display: none;
+}
+
+/* Mountain Title & Via */
+.video-card-title-section {
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.video-card-title {
+  font-size: 26px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+.video-card-via {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  margin-top: 5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Center Details Section */
+.video-card-center-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.video-card-start-from {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  text-transform: capitalize;
+  margin-bottom: -4px;
+}
+
+/* Price Pill - Solid White with Dark Font (Exact Video Match) */
+.video-card-price-pill {
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 22px;
+  font-weight: 900;
+  padding: 7px 32px;
+  border-radius: 999px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* Route / Meeting Point Pill */
+.video-card-route-pill {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 18px;
+  border-radius: 999px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  max-width: 96%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sub-Info Badges Row (Duration & Peak/Summit) */
+.video-card-sub-badges {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.video-card-pill-info {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.2px solid rgba(255, 255, 255, 0.85);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* Bottom Bar of Card */
+.video-card-bottom-bar {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+
+.video-btn-booking-now {
+  background: #ffd600;
+  color: #000000;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.video-seat-text {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.video-agency-handle {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #ffffff;
+  opacity: 0.95;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+/* Auto slide progress bar */
+.slide-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: #ffffff;
+  width: 0%;
+  transition: width linear;
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* ==============================================================================
+   FLOATING CTA OVERLAY (cta.html) - SERBA PUTIH (EXACT VIDEO MATCH)
+   ============================================================================== */
+.video-cta-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: transparent;
+  color: #ffffff;
+  user-select: none;
+}
+
+.video-cta-wa-icon {
+  width: 52px;
+  height: 52px;
+  color: #ffffff;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+}
+
+.video-cta-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.video-cta-headline {
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.video-cta-phones {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  margin-top: 3px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* ==============================================================================
+   RUNNING TEXT COMPONENT (running-text.html) - SERBA PUTIH
+   ============================================================================== */
+.running-text-wrapper {
+  width: 100%;
+  height: 50px;
+  background: rgba(10, 15, 22, 0.85);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.running-text-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 900;
+  font-size: 13px;
+  padding: 0 16px;
+  height: 100%;
+  z-index: 10;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.running-text-marquee-container {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  will-change: transform;
+  animation: marqueeScroll 24s linear infinite;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 48px;
+}
+
+.marquee-sep {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+}
+
+/* ==============================================================================
+   THEME PRESETS
+   ============================================================================== */
+body[data-theme="cyber-gold"],
+.obs-overlay[data-theme="cyber-gold"] {
+  --border-white: #ffd54f;
+  --white-glow: rgba(255, 213, 79, 0.4);
+}
+
+body[data-theme="emerald-nature"],
+.obs-overlay[data-theme="emerald-nature"] {
+  --border-white: #00e676;
+  --white-glow: rgba(0, 230, 118, 0.45);
+}
+
+body[data-theme="neon-sunset"],
+.obs-overlay[data-theme="neon-sunset"] {
+  --border-white: #ff6d00;
+  --white-glow: rgba(255, 109, 0, 0.5);
+}
+
+/* ==============================================================================
+   KEYFRAME ANIMATIONS - ULTRA SMOOTH STREAMER MOTION
+   ============================================================================== */
+@keyframes marqueeScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes pulseBadge {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes pulseUrgent {
+  0%, 100% {
+    box-shadow: 0 0 12px var(--red-glow);
+    border-color: var(--neon-red);
+  }
+  50% {
+    box-shadow: 0 0 22px #ff1744;
+    border-color: #ff5252;
+  }
+}
+
+/* 1. Smooth 3D Perspective Flip Slide */
+@keyframes smooth3DEnter {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(18deg) translateY(14px) scale(0.95);
+    filter: brightness(1.3) blur(4px);
+  }
+  60% {
+    transform: perspective(1000px) rotateY(-3deg) translateY(-2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0deg) translateY(0) scale(1);
+    filter: brightness(1) blur(0);
+  }
+}
+
+/* 2. Cinematic Ken Burns & Zoom Slide */
+@keyframes cinematicZoomEnter {
+  0% {
+    opacity: 0;
+    transform: scale(1.08) translateY(10px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* 3. Card Flip 3D */
+@keyframes cardFlipEnter {
+  0% {
+    opacity: 0;
+    transform: perspective(800px) rotateX(25deg) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(800px) rotateX(0deg) scale(1);
+  }
+}
+
+/* 4. Slide Drift Horizon */
+@keyframes slideDriftEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(40px) scale(0.96);
+  }
+  70% {
+    transform: translateX(-4px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-card-enter,
+.animate-smooth-3d {
+  animation: smooth3DEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-cinematic-zoom {
+  animation: cinematicZoomEnter 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-card-flip {
+  animation: cardFlipEnter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-slide-drift {
+  animation: slideDriftEnter 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* ==========================================================================
+   ADMIN DASHBOARD 2-COLUMN & LIVE SIMULATOR STYLES
+   ========================================================================== */
+
+.admin-layout-container {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.admin-grid-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .admin-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 28px;
+    align-items: start;
+  }
+}
+
+.admin-preview-sticky {
+  position: sticky;
+  top: 20px;
+  background: #0f141c;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.admin-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.admin-preview-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.admin-preview-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+/* 9:16 Vertical Phone Simulator Frame */
+.sim-phone-frame {
+  width: 100%;
+  max-width: 348px;
+  margin: 0 auto;
+  aspect-ratio: 9 / 16;
+  background: #080b10;
+  border-radius: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.sim-phone-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7) contrast(1.1);
+  z-index: 0;
+}
+
+.sim-phone-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 20%, transparent 70%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 1;
+}
+
+.sim-live-top-bar {
+  position: relative;
+  z-index: 10;
+  padding: 10px 12px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sim-streamer-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sim-streamer-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 9px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sim-streamer-name {
+  font-size: 10px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.sim-live-counter {
+  background: #d50000;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Simulator Card Container (Fitted for Phone Frame) */
+.sim-card-wrap {
+  position: relative;
+  z-index: 10;
+  padding: 4px 10px;
+}
+
+.sim-card-wrap .video-card-container {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 440 / 590;
+  border-width: 1.5px;
+}
+
+/* Simulator CTA Container */
+.sim-cta-wrap {
+  position: relative;
+  z-index: 10;
+  padding: 0 10px;
+  margin-top: auto;
+  margin-bottom: 6px;
+}
+
+.sim-cta-wrap .video-cta-container {
+  width: 100%;
+  padding: 6px 10px;
+}
+
+.sim-cta-wrap .video-cta-wa-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.sim-cta-wrap .video-cta-headline {
+  font-size: 11px;
+}
+
+.sim-cta-wrap .video-cta-phones {
+  font-size: 11px;
+}
+
+/* Simulator Running Text */
+.sim-marquee-wrap {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.sim-marquee-wrap .running-text-full-bar {
+  height: 32px;
+}
+
+.sim-marquee-wrap .live-alert-badge {
+  font-size: 9px;
+  padding: 0 8px;
+}
+
+.sim-marquee-wrap .marquee-chunk {
+  font-size: 10px;
+  gap: 12px;
+  padding-right: 24px;
+}
+
+/* Mobile Preview Toggle Floating Button */
+.mobile-preview-btn {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 90;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 900;
+  font-size: 13px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.mobile-preview-btn:active {
+  transform: scale(0.95);
+}
+
+@media (min-width: 1024px) {
+  .mobile-preview-btn {
+    display: none;
+  }
+}
+

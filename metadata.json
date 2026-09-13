@@ -1,6 +1,6 @@
 {
-  "name": "RVTik PeakStream OBS Overlay & Remote Controller",
-  "description": "Interactive, fully customizable live stream overlay and wireless smartphone remote controller for OBS Studio open trip mountain trekking broadcasts.",
-  "requestFramePermissions": ["camera"],
+  "name": "OBS Open Trip Live Stream Overlay & Admin Dashboard",
+  "description": "Modular & Real-Time OBS Studio Browser Source Overlay for TikTok LIVE Open Trip streamers with interactive trip carousel card, smooth running text, WhatsApp/QRIS CTA banner, and mobile admin dashboard powered by Supabase Realtime.",
+  "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

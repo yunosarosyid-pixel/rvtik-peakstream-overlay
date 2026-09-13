@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OBS Overlay: Running Text Footer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    html, body {
+      background: transparent !important;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .running-text-full-bar {
+      width: 100%;
+      height: 50px;
+      background: rgba(10, 15, 22, 0.88);
+      border-top: 1.5px solid rgba(255, 255, 255, 0.85);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .live-alert-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 0 18px;
+      height: 100%;
+      z-index: 10;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.7);
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+
+    .marquee-track {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      position: relative;
+    }
+
+    .marquee-inner {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: smoothMarquee 26s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-chunk {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      padding-right: 48px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.03em;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .marquee-dot {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+    }
+
+    @keyframes smoothMarquee {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
+    }
+  </style>
+</head>
+<body class="obs-overlay">
+
+  <div class="running-text-full-bar">
+    <!-- Live Badge -->
+    <div class="live-alert-badge">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 5.882V19.24a1.76 1.76 0 0 1-3.417.592l-2.147-6.15M18 8a3 3 0 0 0-3-3 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2 3 3 0 0 0 3-3"></path>
+      </svg>
+      <span>INFO LIVE</span>
+    </div>
+
+    <!-- Smooth Continuous Marquee -->
+    <div class="marquee-track" id="marqueeTrack">
+      <div class="marquee-inner" id="marqueeInner">
+        <!-- Chunk 1 -->
+        <div class="marquee-chunk" id="chunk1">
+          <span class="text-payload">🔥 PROMO LIVE STREAMING OPEN TRIP SPESIAL TIKTOK LIVE! DISKON DP 50% HANYA SAAT LIVE BERLANGSUNG • HUBUNGI WHATSAPP DI BIO • SISA KUOTA TERBATAS SIAPA CEPAT DIA DAPAT!</span>
+          <span class="marquee-dot">◆</span>
+        </div>
+        <!-- Chunk 2 (Duplicate for Seamless Loop) -->
+        <div class="marquee-chunk" id="chunk2">
+          <span class="text-payload">🔥 PROMO LIVE STREAMING OPEN TRIP SPESIAL TIKTOK LIVE! DISKON DP 50% HANYA SAAT LIVE BERLANGSUNG • HUBUNGI WHATSAPP DI BIO • SISA KUOTA TERBATAS SIAPA CEPAT DIA DAPAT!</span>
+          <span class="marquee-dot">◆</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Realtime Sync Engine -->
+  <script src="/app.js"></script>
+
+  <script>
+    (function () {
+      const chunk1 = document.getElementById('chunk1');
+      const chunk2 = document.getElementById('chunk2');
+
+      function updateMarqueeText(text) {
+        if (!text) return;
+        const formatted = text.trim();
+        chunk1.querySelector('.text-payload').textContent = formatted;
+        chunk2.querySelector('.text-payload').textContent = formatted;
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!window.OpenTripSync) return;
+
+        window.OpenTripSync.onSettingsChange((settings) => {
+          if (!settings) return;
+          if (settings.theme_preset) {
+            document.body.setAttribute('data-theme', settings.theme_preset);
+          }
+          if (settings.running_text) {
+            updateMarqueeText(settings.running_text);
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

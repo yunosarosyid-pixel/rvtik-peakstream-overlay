@@ -1,16 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RVTik PeakStream OBS Overlay & Remote Controller</title>
-    <meta name="description" content="Interactive, fully customizable live stream overlay and wireless smartphone remote controller for OBS Studio open trip mountain trekking broadcasts." />
-    <meta property="og:title" content="RVTik PeakStream OBS Overlay & Remote Controller" />
-    <meta property="og:description" content="Interactive, fully customizable live stream overlay and wireless smartphone remote controller for OBS Studio open trip mountain trekking broadcasts." />
+    <title>OBS Open Trip Live Stream Overlay & Admin Dashboard</title>
+    <meta name="description" content="Modular & Real-Time OBS Studio Browser Source Overlay for TikTok LIVE Open Trip streamers with interactive trip carousel card, smooth running text, WhatsApp/QRIS CTA banner, and mobile admin dashboard powered by Supabase Realtime." />
+    <meta property="og:title" content="OBS Open Trip Live Stream Overlay & Admin Dashboard" />
+    <meta property="og:description" content="Modular & Real-Time OBS Studio Browser Source Overlay for TikTok LIVE Open Trip streamers with interactive trip carousel card, smooth running text, WhatsApp/QRIS CTA banner, and mobile admin dashboard powered by Supabase Realtime." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <!-- Supabase CDN & Realtime Sync Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/app.js"></script>
   </head>
-  <body>
+  <body class="bg-[#0b0e14] text-slate-100 font-sans antialiased min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
